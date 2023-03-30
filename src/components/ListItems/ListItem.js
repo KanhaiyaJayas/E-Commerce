@@ -1,14 +1,11 @@
-import AddToCartIcon from "../assets/icons/add_cart.svg";
-const ListItem = ({data}) => {
-  
+import AddToCartIcon from "../../assets/icons/add_cart.svg";
+const ListItem = ({ data }) => {
   return (
     <>
-   
       <div className={"item-card"}>
-       
-        <img src={`/Images/${data?.thumbnail}`}  className={"img-fluid"}/>
-        <div  className={"item-card__information"}>
-          <div  className={"pricing"}>
+        <img src={`/Images/${data?.thumbnail}`} className={"img-fluid"} />
+        <div className={"item-card__information"}>
+          <div className={"pricing"}>
             <span>{data?.discountedPrice}</span>
             <small>
               <strike>₹{data?.price}</strike>
