@@ -1,5 +1,13 @@
 import AddToCartIcon from "../../assets/icons/add_cart.svg";
+import { useState } from "react";
 const ListItem = ({ data }) => {
+  const [message , setMessage] = useState("Not added to the cart yet");
+
+  const handleClick = () => {
+    setMessage("Added to the cart");
+    console.log("Clicked" , message)
+  }
+
   return (
     <>
       <div className={"item-card"}>
@@ -15,7 +23,10 @@ const ListItem = ({ data }) => {
             <h3>T{data?.title}</h3>
           </div>
         </div>
-        <button className={"cart-add"}>
+        <small className={"cart-message"}>
+          {message}
+        </small>
+        <button className={"cart-add"} onClick={handleClick}>
           <span>Add to Card</span>
           <img src={AddToCartIcon} />
         </button>
