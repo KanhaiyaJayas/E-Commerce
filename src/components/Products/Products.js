@@ -1,68 +1,100 @@
-import { useState , useEffect} from "react";
+import { useState, useEffect } from "react";
 import ListItem from "../ListItems/ListItem";
+import axios from "axios";
 const Products = () => {
-  const [items, setItems] = useState([
-    {
-      id: 0,
-      title: "Title of this Item 1",
-      price: 450,
-      discountedPrice: 340,
-      thumbnail: "placeholder.png",
-    },
-    {
-      id: 1,
-      title: "Title of this Item 1",
-      price: 100,
-      discountedPrice: 340,
-      thumbnail: "placeholder.png",
-    },
-    {
-      id: 3,
-      title: "Title of this Item 1",
-      price: 100,
-      discountedPrice: 340,
-      thumbnail: "placeholder.png",
-    },
-    {
-      id: 4,
-      title: "Title of this Item 1",
-      price: 100,
-      discountedPrice: 340,
-      thumbnail: "placeholder.png",
-    },
-  ]);
+  const [items, setItems] = useState([]);
+  //get Data by fetch method
+  // useEffect(() => {
+  //   fetch('https://e-commerce-project-f5847-default-rtdb.firebaseio.com/items.json').then(response => response.json()).then(data => {
+  //     console.log(data)
+  //   }).catch(error => {
+  //     console.log(error)
+  //   });
+  // })
 
-  const [isLoggedIn , setIsLoggedIn] = useState(false)
+  //frtch data by axios
+  // useEffect(() => {
+  //   axios
+  //   .get(
+  //     "https://e-commerce-project-f5847-default-rtdb.firebaseio.com/items.json"
+  //   )
+  //   .then((response) => {
+  //     const data = response.data;
+  //     const transformData = data.map((item , index) => {
+  //       return {...item , id: index}
+  //     });
+  //     setItems(transformData)
+  //   })
+  //   .catch((error) => console.log(error));
+  // },[])
+
   useEffect(() => {
-    const isTokenSet = localStorage.getItem('demo-token');
-    setIsLoggedIn(isTokenSet);
-    document.title = isTokenSet ? "Welcome USer" : "Please Login";
-  } , [isLoggedIn]);
-  console.log(isLoggedIn)
-  const handleLogin = () => {
-    console.log("jdljldjl")
-    localStorage.setItem("demo-token" , true)
-    setIsLoggedIn(true)
+    async function fetchItmes() {
+      try {
+        const response = await axios.get(
+          "https://e-commerce-project-f5847-default-rtdb.firebaseio.com/items.json"
+        );
+        const data = response.data;
+        const transformData = data.map((item, index) => {
+          return {
+            ...item,
+            id: index,
+          };
+        });
+        setItems(transformData);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    fetchItmes();
+  }, []);
+
+  const updateItemTitle = async (itemId) => {
+    try {
+      let title = `Item with ID: ${itemId}`;
+      await axios.patch(`https://e-commerce-project-f5847-default-rtdb.firebaseio.com/items/${itemId}.json`, {
+        title: "Some Updated Title"
+      })
+      let data = [...items];
+      let index = data.findIndex((item) => item.id === itemId);
+      data[index]['title'] = title;
+    }
+   catch(error) {
+    console.log('Error Updating The Data!!');
+   }
   }
-  const handleLogout = () => {
-    localStorage.removeItem("demo-token");
-    setIsLoggedIn(false)
-  }
+
+  // const [isLoggedIn , setIsLoggedIn] = useState(false)
+  // useEffect(() => {
+  //   const isTokenSet = localStorage.getItem('demo-token');
+  //   setIsLoggedIn(isTokenSet);
+  //   document.title = isTokenSet ? "Welcome USer" : "Please Login";
+  // } , [isLoggedIn]);
+  // console.log(isLoggedIn)
+  // const handleLogin = () => {
+  //   console.log("jdljldjl")
+  //   localStorage.setItem("demo-token" , true)
+  //   setIsLoggedIn(true)
+  // }
+  // const handleLogout = () => {
+  //   localStorage.removeItem("demo-token");
+  //   setIsLoggedIn(false)
+  // }
   return (
     <div className={"product-list"}>
       <div className={"product-list--wrapper"}>
         {items.map((item) => {
-          return <ListItem key={item.id} data={item} />;
+          return <ListItem key={item.id} data={item} updateItemTitle={updateItemTitle}/>;
         })}
       </div>
-     
-      <h1>{isLoggedIn ? "Welcome User" :"please Login"}</h1>
-      {isLoggedIn ? <button onClick={handleLogout}>
+
+      {/* <h1>{isLoggedIn ? "Welcome User" :"please Login"}</h1> */}
+      {/* {isLoggedIn ? <button onClick={handleLogout}>
         Logout
       </button> : <button onClick={handleLogin}>
         Login
-      </button> }
-      
+      </button> } */}
     </div>
   );
 };
