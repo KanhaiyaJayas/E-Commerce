@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import ListItem from "../ListItems/ListItem";
 import axios from "axios";
+import Loader from "../UI/loader";
 const Products = () => {
   const [items, setItems] = useState([]);
+  const [loader , setLoader] = useState(true);
   //get Data by fetch method
   // useEffect(() => {
   //   fetch('https://e-commerce-project-f5847-default-rtdb.firebaseio.com/items.json').then(response => response.json()).then(data => {
@@ -42,8 +44,13 @@ const Products = () => {
           };
         });
         setItems(transformData);
+        setLoader(false);
       } catch (error) {
         console.log(error);
+        setLoader(false);
+      }
+      finally {
+        setLoader(false);
       }
     }
 
@@ -82,6 +89,7 @@ const Products = () => {
   //   setIsLoggedIn(false)
   // }
   return (
+    <>
     <div className={"product-list"}>
       <div className={"product-list--wrapper"}>
         {items.map((item) => {
@@ -96,6 +104,8 @@ const Products = () => {
         Login
       </button> } */}
     </div>
+   {loader &&  <Loader/>}
+    </>
   );
 };
 
